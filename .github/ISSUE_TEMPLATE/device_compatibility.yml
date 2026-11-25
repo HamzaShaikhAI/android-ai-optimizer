@@ -1,0 +1,36 @@
+name: 📱 Device Compatibility & Benchmark Report
+description: Share verified Stage 1–5 benchmark results or OEM quirks for your Android phone.
+title: "[Device]: "
+labels: ["device-compatibility"]
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Device Manufacturer, Model & SoC
+      placeholder: "e.g., Samsung Galaxy A54 (Exynos 1380, 8 GB RAM)"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Android Version, SDK & OEM Skin
+      placeholder: "e.g., Android 14 (SDK 34), One UI 6.1"
+    validations:
+      required: true
+  - type: textarea
+    id: quirks
+    attributes:
+      label: Required Developer Option Toggles or Protected Packages Observed
+      description: Any OEM toggles required or packages returning `DELETE_FAILED_INTERNAL_ERROR`?
+  - type: textarea
+    id: benchmarks
+    attributes:
+      label: Before vs. After Benchmark Metrics (Optional)
+      description: Paste your sanitized Stage 5 table (`Free RAM`, `Used RAM`, `Active Service Records`, `TotalTime` ms).
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy Check
+      options:
+        - label: Confirmed no device serial numbers or personal accounts appear above.
+          required: true

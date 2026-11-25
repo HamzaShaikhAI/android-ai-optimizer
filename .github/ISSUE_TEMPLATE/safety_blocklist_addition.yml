@@ -1,0 +1,26 @@
+name: 🛡️ Safety Blocklist Addition
+description: Report a critical system/OEM package or banking/UPI app that should be added to safety/hard_blocklist.json.
+title: "[Safety]: Protect "
+labels: ["safety-blocklist"]
+body:
+  - type: input
+    id: package
+    attributes:
+      label: Android Package ID
+      placeholder: "e.g., com.example.criticalservice"
+    validations:
+      required: true
+  - type: input
+    id: oem
+    attributes:
+      label: Affected OEM / Android Version
+      placeholder: "e.g., Xiaomi HyperOS 2 / Android 15"
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: What breaks if removed or throttled?
+      description: Describe the bootloop, crash, or broken OS/banking/notification behavior.
+    validations:
+      required: true

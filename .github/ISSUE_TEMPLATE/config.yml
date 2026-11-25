@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Security Vulnerability (Private Disclosure)
+    url: https://github.com/HamzaShaikhAI/android-ai-optimizer/security/advisories/new
+    about: Do NOT open public issues for command-injection or blocklist-bypass vulnerabilities. Report privately here.
+  - name: 📖 Setup & Troubleshooting Guide
+    url: https://github.com/HamzaShaikhAI/android-ai-optimizer/blob/main/docs/TROUBLESHOOTING.md
+    about: Check solutions for unauthorized ADB devices, OEM permission walls, and 1-click app restore before opening an issue.

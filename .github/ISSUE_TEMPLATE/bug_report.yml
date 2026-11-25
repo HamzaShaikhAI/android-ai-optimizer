@@ -1,0 +1,58 @@
+name: 🐛 Bug Report
+description: Report a script error, MCP server issue, or unexpected Android ADB behavior.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > **Privacy Reminder:** Never paste your ADB device serial number, IMEI, or full `packages_backup.txt` / `latest_audit.json` dumps in a public issue.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Clear description of the bug and which stage/script or MCP tool failed.
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device Model & OEM Skin
+      placeholder: "e.g., OPPO CPH2387 (ColorOS 14) / Pixel 7 (Stock) / Redmi Note 12 (HyperOS)"
+    validations:
+      required: true
+  - type: input
+    id: android_version
+    attributes:
+      label: Android Version & SDK Level
+      placeholder: "e.g., Android 14 (SDK 34)"
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection Mode & Interface
+      options:
+        - Wired USB ADB + Python CLI (`scripts/`)
+        - Wireless ADB + Python CLI (`scripts/`)
+        - Google Antigravity + Built-in MCP (`mcp_server/server.py`)
+        - Antigravity + `FlashZ/adb-mcp`
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Command & Sanitized Error Output
+      description: Paste the exact command you ran and the error message (redact any serial numbers).
+      render: shell
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission Checks
+      options:
+        - label: I checked `docs/TROUBLESHOOTING.md` and `docs/OEM_NOTES.md`.
+          required: true
+        - label: I removed any personal device serial numbers or private app lists from the logs above.
+          required: true

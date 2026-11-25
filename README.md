@@ -9,6 +9,7 @@
 [![MCP Compatible](https://img.shields.io/badge/MCP-JSON--RPC%202.0-8A2BE2)](.agents/mcp_config.json)
 [![Android SDK 28+](https://img.shields.io/badge/Android-SDK%2028%2B-3DDC84?logo=android&logoColor=white)](#supported-devices--oem-quirks)
 [![Tests](https://img.shields.io/badge/Unit%20Tests-12%2F12%20Passing-brightgreen)](tests/test_safety_and_uad.py)
+[![CI](https://github.com/HamzaShaikhAI/android-ai-optimizer/actions/workflows/ci.yml/badge.svg)](https://github.com/HamzaShaikhAI/android-ai-optimizer/actions/workflows/ci.yml)
 [![Security Policy](https://img.shields.io/badge/Security-Policy-orange)](SECURITY.md)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local-teal)](PRIVACY.md)
 
@@ -209,3 +210,4 @@ python -m unittest discover -s tests -v
 - **License:** Released under the [MIT License](LICENSE). Package classifications are dynamically fetched at runtime from [UAD-NG](https://github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation) into gitignored `cache/`.
 - **Security:** Read our [Security Policy](SECURITY.md) for responsible disclosure and MCP threat-model details.
 - **Privacy:** Read our [Privacy Policy](PRIVACY.md) — 100% local execution, zero telemetry.
+- **Contributing:** See [CONTRIBUTING.md](CONTRIBUTING.md) or submit device benchmarks and blocklist updates via [GitHub Issues](https://github.com/HamzaShaikhAI/android-ai-optimizer/issues).

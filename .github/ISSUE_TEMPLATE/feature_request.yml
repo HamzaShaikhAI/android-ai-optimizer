@@ -1,0 +1,30 @@
+name: ✨ Feature Request
+description: Propose a new optimization module, MCP tool, or diagnostic capability.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please review [docs/MYTHS_AND_TRAPS.md](https://github.com/HamzaShaikhAI/android-ai-optimizer/blob/main/docs/MYTHS_AND_TRAPS.md) first—requests involving root-only `setprop` hacks or `cmd package compile -m everything -a` are intentionally not supported.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Explain the bottleneck or workflow gap you encountered.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Non-Root ADB / MCP Solution
+      description: Specify exact AOSP commands, Android SDK requirements, and how rollback will work.
+    validations:
+      required: true
+  - type: checkboxes
+    id: rollback
+    attributes:
+      label: Safety Alignment
+      options:
+        - label: Works without root (`su`) and supports 1-click rollback via `logs/rollback_log.json`.
+          required: true
