@@ -268,7 +268,10 @@ class TestAuditTuneBenchmarkAndHook(unittest.TestCase):
 
         self.assertEqual(benchmark_device.parse_total_time_ms("Status: ok\nTotalTime: 418\nWaitTime: 425\n"), 418)
         self.assertEqual(benchmark_device.parse_total_time_ms("Status: ok\nWaitTime: 3178\nComplete\n"), 3178)
-        with mock.patch.object(adb_common, "run_adb", return_value=mock.Mock(stdout="")) as adb_run_mock:
+        with (
+            mock.patch.dict("os.environ", {"ADB_BRIDGE": "adb"}, clear=False),
+            mock.patch.object(adb_common, "run_adb", return_value=mock.Mock(stdout="")) as adb_run_mock,
+        ):
             adb_common.run_adb_shell(["am", "start", "-W", "com.google.android.youtube/.Shell$HomeActivity"])
             sent_args = adb_run_mock.call_args[0][0]
             self.assertIn("'com.google.android.youtube/.Shell$HomeActivity'", sent_args)
