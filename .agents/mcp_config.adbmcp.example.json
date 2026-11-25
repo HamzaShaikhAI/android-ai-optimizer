@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "android-optimizer": {
+      "command": "python",
+      "args": ["mcp_server/server.py"]
+    },
+    "adb": {
+      "command": "adbmcp",
+      "args": [],
+      "env": {
+        "ADB_MCP_ALLOW_SHELL": "0"
+      }
+    }
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "version": "1.0.0",
+  "description": "Offline MIT-licensed safety blocklist of critical Android, Google, and OEM packages that must never be uninstalled by automated optimization flows.",
+  "exact_packages": {
+    "android": {
+      "category": "Core OS",
+      "reason": "Core Android framework-res package. Removing bricks the OS."
+    },
+    "com.android.systemui": {
+      "category": "Core OS",
+      "reason": "System UI (status bar, navigation bar, lockscreen, notifications). Immediate crash/bootloop if removed."
+    },
+    "com.android.settings": {
+      "category": "Core OS",
+      "reason": "Device Settings application. Needed to configure USB debugging, Wi-Fi, and apps."
+    },
+    "com.android.phone": {
+      "category": "Telephony",
+      "reason": "Core cellular telephony and SIM radio service. Causes persistent crashes/bootloops."
+    },
+    "com.android.server.telecom": {
+      "category": "Telephony",
+      "reason": "Core call routing and Telecom framework."
+    },
+    "com.android.shell": {
+      "category": "Core OS",
+      "reason": "ADB shell host UID. Removing breaks ADB itself."
+    },
+    "com.android.packageinstaller": {
+      "category": "Core OS",
+      "reason": "Handles APK installation and runtime permission dialogs."
+    },
+    "com.google.android.packageinstaller": {
+      "category": "Core OS",
+      "reason": "Google Package Installer and permission UI."
+    },
+    "com.google.android.permissioncontroller": {
+      "category": "Core OS",
+      "reason": "Android runtime permissions controller."
+    },
+    "com.android.permissioncontroller": {
+      "category": "Core OS",
+      "reason": "AOSP runtime permissions controller."
+    },
+    "com.android.documentsui": {
+      "category": "Core OS",
+      "reason": "System file picker required by apps for storage access."
+    },
+    "com.google.android.documentsui": {
+      "category": "Core OS",
+      "reason": "Google Files / system document picker required by apps."
+    },
+    "com.android.externalstorage": {
+      "category": "Core OS",
+      "reason": "External storage provider."
+    },
+    "com.android.inputdevices": {
+      "category": "Input",
+      "reason": "Core hardware/software input device layouts."
+    },
+    "com.android.keychain": {
+      "category": "Security",
+      "reason": "System credential storage and TLS client certificates."
+    },
+    "com.android.webview": {
+      "category": "WebView",
+      "reason": "System WebView renderer used by almost all Android apps."
+    },
+    "com.google.android.webview": {
+      "category": "WebView",
+      "reason": "Android System WebView renderer."
+    },
+    "com.google.android.gms": {
+      "category": "Google Core",
+      "reason": "Google Play Services. Removing breaks Play Store, notifications, location, and banking Play Integrity."
+    },
+    "com.google.android.gsf": {
+      "category": "Google Core",
+      "reason": "Google Services Framework required by Play Services and Play Store."
+    },
+    "com.android.vending": {
+      "category": "Google Core",
+      "reason": "Google Play Store and Play Integrity verification."
+    },
+    "com.google.android.inputmethod.latin": {
+      "category": "Input / IME",
+      "reason": "Gboard default keyboard. Never remove unless another keyboard is verified active."
+    },
+    "com.google.android.apps.nexuslauncher": {
+      "category": "Launcher",
+      "reason": "Pixel Launcher. Removing without an active replacement leaves the device unusable."
+    },
+    "com.miui.securitycenter": {
+      "category": "MIUI/HyperOS Bootloop",
+      "reason": "Critical MIUI/HyperOS security & permission daemon. Removing causes an immediate bootloop into Recovery."
+    },
+    "com.xiaomi.finddevice": {
+      "category": "MIUI/HyperOS Bootloop",
+      "reason": "Critical Xiaomi Find Device daemon. Removing causes a hard bootloop on MIUI/HyperOS."
+    },
+    "com.miui.home": {
+      "category": "MIUI/HyperOS Launcher",
+      "reason": "MIUI System Launcher and recents provider."
+    },
+    "com.sec.android.app.launcher": {
+      "category": "One UI Launcher",
+      "reason": "Samsung One UI Home launcher and recents integration."
+    },
+    "com.samsung.android.honeyboard": {
+      "category": "One UI Input / IME",
+      "reason": "Samsung Keyboard. Do not remove without a verified active replacement IME."
+    },
+    "com.samsung.android.knox.containercore": {
+      "category": "One UI Security",
+      "reason": "Samsung Knox core needed for Secure Folder and Work Profile."
+    },
+    "com.samsung.android.spay": {
+      "category": "One UI Payments",
+      "reason": "Samsung Pay / Wallet core package."
+    },
+    "com.oplus.battery": {
+      "category": "ColorOS/OxygenOS Core",
+      "reason": "Core OPlus battery & power policy service."
+    },
+    "com.coloros.phonemanager": {
+      "category": "ColorOS Core",
+      "reason": "ColorOS permission and security manager."
+    },
+    "com.oppo.launcher": {
+      "category": "ColorOS Launcher",
+      "reason": "Default Oppo/ColorOS launcher."
+    },
+    "com.android.launcher3": {
+      "category": "AOSP Launcher",
+      "reason": "Default AOSP / OEM Launcher3."
+    }
+  },
+  "protected_prefixes": [
+    "com.android.providers.",
+    "com.android.server.",
+    "com.android.se",
+    "com.android.internal.",
+    "com.google.android.ext.",
+    "com.google.android.modulemetadata",
+    "com.samsung.android.knox."
+  ],
+  "never_throttle_keywords": [
+    "alarm",
+    "clock",
+    "deskclock",
+    "messaging",
+    "mms",
+    "sms",
+    "dialer",
+    "telecom",
+    "whatsapp",
+    "telegram",
+    "signal",
+    "authenticator",
+    "auth",
+    "otp",
+    "bank",
+    "upi",
+    "paytm",
+    "phonepe",
+    "gpay",
+    "paisa",
+    "wallet",
+    "vpn",
+    "wireguard",
+    "tailscale",
+    "talkback",
+    "accessibility",
+    "inputmethod",
+    "keyboard",
+    "gboard"
+  ]
+}

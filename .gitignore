@@ -1,0 +1,36 @@
+# Personal device dumps, logs, and serial-bearing artifacts (privacy-critical)
+logs/
+cache/
+data/
+*.txt
+*.log
+*.bak
+latest_audit.json
+device_audit_*.json
+benchmark_before.json
+benchmark_after.json
+rollback_log.json
+optimization_report.md
+device_report*.md
+
+# Allow explicit repository config/test fixtures if needed
+!tests/fixtures/*.txt
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,17 @@
+{
+  "android-adb-safety-gate": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python ./scripts/pretool_guard.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
