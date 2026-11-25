@@ -12,7 +12,9 @@
 [![CI](https://github.com/HamzaShaikhAI/android-ai-optimizer/actions/workflows/ci.yml/badge.svg)](https://github.com/HamzaShaikhAI/android-ai-optimizer/actions/workflows/ci.yml)
 [![Security Policy](https://img.shields.io/badge/Security-Policy-orange)](SECURITY.md)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local-teal)](PRIVACY.md)
+[![Official Guide](https://img.shields.io/badge/Guide-hamzashaikhai.com%2Fandroid--ai--optimizer-0ea5e9)](https://hamzashaikhai.com/android-ai-optimizer/)
 
+[Interactive Guide & Benchmarks](https://hamzashaikhai.com/android-ai-optimizer/) •
 [Quickstart](#-quickstart-wired--wireless-adb) •
 [Architecture](#-4-layer-safety-architecture) •
 [Real-Device Benchmarks](#-verified-real-device-benchmark-oppo-a57) •
@@ -40,6 +42,15 @@ Unlike blind shell scripts or risky "booster" apps, this project enforces a stri
 - **Hallucination-Proof Debloating:** Cross-references installed packages against the live [Universal Android Debloater Next Generation (UAD-NG)](https://github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation) database (`uad_lists.json`), surfaces `neededBy` dependency warnings, and enforces a local [safety/hard_blocklist.json](safety/hard_blocklist.json).
 - **SDK-Aware AOSP Tuning:** Automatically adapts commands across Android 9–15 (`pm art dexopt-packages -r bg-dexopt` on Android 14+ / SDK 34+, `cmd game set` on Android 13+ / SDK 33+, Phenotype-safe Cached Apps Freezer persistence on Android 11+, and exact `appops` state restoration).
 - **Wired, Wireless & On-Device (Termux + Shizuku):** Auto-discovers `adb` on `PATH` or standard SDK paths, works over Android 11+ Wireless Debugging, and supports **PC-less on-device execution** via Termux + Shizuku (`rish`).
+
+### Comparison vs Alternatives
+
+| Capability | Android AI Optimizer (MCP) | Manual UAD-NG GUI | Raw Shell / Batch Scripts | Play Store "Boosters" |
+| :--- | :---: | :---: | :---: | :---: |
+| **Zero-Shell Scoped MCP (`10` tools)** | ✅ JSON-RPC 2.0 stdio | ❌ GUI only | ❌ Unrestricted shell | ❌ No ADB access |
+| **Bootloop Shield + `PreToolUse` Hook** | ✅ `hard_blocklist.json` + UAD-NG | ⚠️ Warnings only | ❌ None | ❌ Kills active caches |
+| **Wired, Wireless & Termux + Shizuku** | ✅ PC & PC-less `rish` | ❌ PC only | ⚠️ Manual setup | ❌ No ADB bridge |
+| **1-Click State + AppOps Rollback** | ✅ `--undo-all` (`logs/rollback_log.json`) | ⚠️ Reinstall only | ❌ Manual undo | ❌ None |
 
 ---
 
