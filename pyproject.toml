@@ -1,6 +1,6 @@
 [project]
 name = "android-ai-optimizer"
-version = "0.2.0"
+version = "1.0.0"
 description = "Audit-first, reversible AI optimization toolkit for Android devices via Google Antigravity, built-in scoped MCP server, and ADB."
 readme = "README.md"
 license = { text = "MIT" }

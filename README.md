@@ -8,7 +8,7 @@
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![MCP Compatible](https://img.shields.io/badge/MCP-JSON--RPC%202.0-8A2BE2)](.agents/mcp_config.json)
 [![Android SDK 28+](https://img.shields.io/badge/Android-SDK%2028%2B-3DDC84?logo=android&logoColor=white)](#supported-devices--oem-quirks)
-[![Tests](https://img.shields.io/badge/Unit%20Tests-12%2F12%20Passing-brightgreen)](tests/test_safety_and_uad.py)
+[![Tests](https://img.shields.io/badge/Unit%20Tests-13%2F13%20Passing-brightgreen)](tests/test_safety_and_uad.py)
 [![CI](https://github.com/HamzaShaikhAI/android-ai-optimizer/actions/workflows/ci.yml/badge.svg)](https://github.com/HamzaShaikhAI/android-ai-optimizer/actions/workflows/ci.yml)
 [![Security Policy](https://img.shields.io/badge/Security-Policy-orange)](SECURITY.md)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local-teal)](PRIVACY.md)
@@ -39,7 +39,7 @@ Unlike blind shell scripts or risky "booster" apps, this project enforces a stri
 - **Zero-Dependency Scoped MCP Server:** Built on Python 3.10+ stdlib (newline-delimited JSON-RPC 2.0 over stdio) with 10 scoped tools and **zero raw shell access**.
 - **Hallucination-Proof Debloating:** Cross-references installed packages against the live [Universal Android Debloater Next Generation (UAD-NG)](https://github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation) database (`uad_lists.json`), surfaces `neededBy` dependency warnings, and enforces a local [safety/hard_blocklist.json](safety/hard_blocklist.json).
 - **SDK-Aware AOSP Tuning:** Automatically adapts commands across Android 9–15 (`pm art dexopt-packages -r bg-dexopt` on Android 14+ / SDK 34+, `cmd game set` on Android 13+ / SDK 33+, Phenotype-safe Cached Apps Freezer persistence on Android 11+, and exact `appops` state restoration).
-- **Wired & Wireless ADB Ready:** Auto-discovers `adb` on `PATH` or standard Android SDK paths and works identically over USB or Android 11+ Wireless Debugging.
+- **Wired, Wireless & On-Device (Termux + Shizuku):** Auto-discovers `adb` on `PATH` or standard SDK paths, works over Android 11+ Wireless Debugging, and supports **PC-less on-device execution** via Termux + Shizuku (`rish`).
 
 ---
 

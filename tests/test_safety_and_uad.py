@@ -57,6 +57,39 @@ class TestConfigsAndSafety(unittest.TestCase):
             with mock.patch.dict("os.environ", {"ADB_PATH": str(fake_adb)}, clear=False):
                 self.assertEqual(adb_common.find_adb(), str(fake_adb))
 
+    def test_rish_shizuku_bridge_detection_and_execution(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fake_rish = Path(tmp) / "rish"
+            fake_rish.write_text("#!/system/bin/sh\n", encoding="utf-8")
+            env = {
+                "ADB_BRIDGE": "auto",
+                "TERMUX_VERSION": "0.118.0",
+                "RISH_PATH": str(fake_rish),
+            }
+            with (
+                mock.patch.dict("os.environ", env, clear=True),
+                mock.patch.object(adb_common, "find_adb_optional", return_value=None),
+            ):
+                self.assertEqual(adb_common.resolve_bridge_mode(), "rish")
+
+            def fake_run(cmd, **kwargs):
+                self.assertEqual(kwargs.get("stdin"), subprocess.DEVNULL)
+                self.assertEqual(kwargs["env"]["RISH_APPLICATION_ID"], "com.termux")
+                if cmd == [str(fake_rish), "-c", "id"]:
+                    return mock.Mock(returncode=0, stdout="uid=2000(shell)\n", stderr="")
+                self.assertEqual(cmd, [str(fake_rish), "-c", "am start -W 'com.pkg/.A$B'"])
+                return mock.Mock(returncode=0, stdout="Status: ok\n", stderr="")
+
+            with (
+                mock.patch.dict("os.environ", {"ADB_BRIDGE": "rish", "RISH_PATH": str(fake_rish)}, clear=True),
+                mock.patch.object(adb_common.subprocess, "run", side_effect=fake_run),
+            ):
+                devs = adb_common.list_devices()
+                self.assertEqual(devs[0]["serial"], "local-shizuku")
+                self.assertEqual(devs[0]["state"], "device")
+                out = adb_common.run_adb_shell(["am", "start", "-W", "com.pkg/.A$B"])
+                self.assertIn("Status: ok", out)
+
     def test_validate_package_name(self) -> None:
         self.assertEqual(adb_common.validate_package_name("com.example.app"), "com.example.app")
         self.assertEqual(adb_common.validate_package_name("android"), "android")

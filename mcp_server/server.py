@@ -30,26 +30,13 @@ import restore_package  # noqa: E402
 import sync_uad  # noqa: E402
 import tune_performance  # noqa: E402
 
-SERVER_INFO = {"name": "android-ai-optimizer", "version": "0.2.0"}
+SERVER_INFO = {"name": "android-ai-optimizer", "version": "1.0.0"}
 SUPPORTED_PROTOCOL_VERSIONS = ("2025-03-26", "2024-11-05")
 
 
 def _tool_list_devices(args: dict[str, Any]) -> dict[str, Any]:
-    adb_bin = adb_common.find_adb()
-    import subprocess
-
-    proc = subprocess.run(
-        [adb_bin, "devices", "-l"],
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=15,
-    )
-    if proc.returncode != 0:
-        raise RuntimeError(proc.stderr.strip() or "adb devices failed")
-    devices = adb_common.parse_adb_devices(proc.stdout)
-    return {"devices": devices, "count": len(devices)}
+    devices = adb_common.list_devices()
+    return {"bridge": adb_common.resolve_bridge_mode(), "devices": devices, "count": len(devices)}
 
 
 def _tool_audit_device(args: dict[str, Any]) -> dict[str, Any]:

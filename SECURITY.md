@@ -14,8 +14,8 @@ Because this repository interfaces with Android devices over ADB via an AI agent
 
 | Version | Supported |
 | :--- | :---: |
-| `0.2.x` (Latest `main`) | ✅ Yes |
-| `< 0.2.0` | ❌ No |
+| `1.x` (Latest `main`) | ✅ Yes |
+| `< 1.0` | ❌ No |
 
 ## Reporting a Vulnerability
 

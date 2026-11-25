@@ -58,7 +58,7 @@ def validate_package_name(package: str) -> str:
     return cleaned
 
 
-def find_adb() -> str:
+def find_adb_optional() -> str | None:
     """Locate the `adb` binary via ADB_PATH, PATH, or standard Android SDK locations."""
     env_adb = os.environ.get("ADB_PATH")
     if env_adb and Path(env_adb).is_file():
@@ -84,11 +84,121 @@ def find_adb() -> str:
     for candidate in candidates:
         if candidate.is_file():
             return str(candidate)
+    return None
 
+
+def find_adb() -> str:
+    """Locate the `adb` binary or fail with actionable instructions."""
+    adb_bin = find_adb_optional()
+    if not adb_bin:
+        raise AdbDeviceError(
+            "Android Debug Bridge (`adb`) was not found on PATH or standard SDK locations. "
+            "Install Android SDK Platform Tools, set ADB_PATH, or use Termux + Shizuku (`rish`) "
+            "(see docs/SETUP_ADB.md)."
+        )
+    return adb_bin
+
+
+def find_rish(required: bool = True) -> str | None:
+    """Locate Shizuku's `rish` binary for on-device Termux execution."""
+    env_rish = os.environ.get("RISH_PATH")
+    if env_rish and Path(env_rish).is_file():
+        return env_rish
+
+    rish_bin = shutil.which("rish")
+    if rish_bin:
+        return rish_bin
+
+    candidates = [
+        Path.home() / "rish",
+        Path("/data/data/com.termux/files/usr/bin/rish"),
+    ]
+    prefix = os.environ.get("PREFIX")
+    if prefix:
+        candidates.insert(0, Path(prefix) / "bin" / "rish")
+
+    for candidate in candidates:
+        if candidate.is_file():
+            return str(candidate)
+
+    if required:
+        raise AdbDeviceError(
+            "Shizuku `rish` binary was not found on PATH, RISH_PATH, or Termux directories. "
+            "Export `rish` and `rish_shizuku.dex` from the Shizuku app (see docs/SETUP_ADB.md)."
+        )
+    return None
+
+
+def resolve_bridge_mode() -> str:
+    """Resolve active execution bridge (`adb` for PC->Device or `rish` for Termux+Shizuku)."""
+    mode = (os.environ.get("ADB_BRIDGE") or "auto").strip().lower()
+    if mode in ("adb", "rish"):
+        return mode
+    if mode != "auto":
+        raise AdbDeviceError(f"Unsupported ADB_BRIDGE={mode!r}; expected 'auto', 'adb', or 'rish'.")
+
+    in_termux = bool(os.environ.get("TERMUX_VERSION")) or "com.termux" in os.environ.get("PREFIX", "")
+    has_adb = find_adb_optional() is not None
+    has_rish = find_rish(required=False) is not None
+
+    if in_termux and has_rish and not os.environ.get("ADB_PATH") and not os.environ.get("ADB_SERIAL"):
+        return "rish"
+    if has_adb:
+        return "adb"
+    if has_rish:
+        return "rish"
     raise AdbDeviceError(
-        "Android Debug Bridge (`adb`) was not found on PATH or standard SDK locations. "
-        "Install Android SDK Platform Tools or set ADB_PATH (see docs/SETUP_ADB.md)."
+        "Neither `adb` nor Shizuku `rish` was found. Install Android Platform Tools or configure "
+        "Shizuku `rish` in Termux (see docs/SETUP_ADB.md)."
     )
+
+
+def _rish_env() -> dict[str, str]:
+    """Build subprocess environment ensuring RISH_APPLICATION_ID is set for Termux/Shizuku."""
+    env = dict(os.environ)
+    env.setdefault("RISH_APPLICATION_ID", "com.termux")
+    return env
+
+
+def list_devices() -> list[dict[str, str]]:
+    """List connected ADB devices or verify on-device Shizuku `rish` bridge."""
+    if resolve_bridge_mode() == "rish":
+        rish_bin = find_rish(required=True)
+        assert rish_bin is not None
+        proc = subprocess.run(
+            [rish_bin, "-c", "id"],
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            env=_rish_env(),
+            timeout=15,
+        )
+        out = (proc.stdout + " " + proc.stderr).strip()
+        if proc.returncode == 0 and ("uid=2000" in out or "uid=0" in out):
+            return [{"serial": "local-shizuku", "state": "device", "details": f"bridge:rish {out}"}]
+        return [
+            {
+                "serial": "local-shizuku",
+                "state": "unauthorized",
+                "details": f"bridge:rish unavailable ({out or f'exit {proc.returncode}'})",
+            }
+        ]
+
+    adb_bin = find_adb()
+    proc = subprocess.run(
+        [adb_bin, "devices", "-l"],
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=15,
+    )
+    if proc.returncode != 0:
+        raise AdbDeviceError(f"Failed to query `adb devices -l`: {proc.stderr.strip()}")
+    return parse_adb_devices(proc.stdout)
 
 
 def parse_adb_devices(output: str) -> list[dict[str, str]]:
@@ -108,7 +218,17 @@ def parse_adb_devices(output: str) -> list[dict[str, str]]:
 
 
 def resolve_serial(serial: str | None = None) -> str:
-    """Resolve and verify a single authorized ADB device serial."""
+    """Resolve and verify a single authorized ADB device serial (or `local-shizuku`)."""
+    if resolve_bridge_mode() == "rish":
+        devices = list_devices()
+        dev = devices[0]
+        if dev["state"] != "device":
+            raise AdbDeviceError(
+                f"Shizuku `rish` bridge is not ready ({dev['details']}). "
+                "Start Shizuku, grant Termux permission, and ensure `chmod 400 rish_shizuku.dex` on Android 14+."
+            )
+        return "local-shizuku"
+
     requested = serial or os.environ.get("ADB_SERIAL") or None
     adb_bin = find_adb()
 
@@ -116,6 +236,7 @@ def resolve_serial(serial: str | None = None) -> str:
     for attempt in range(8):
         proc = subprocess.run(
             [adb_bin, "devices", "-l"],
+            stdin=subprocess.DEVNULL,
             capture_output=True,
             text=True,
             encoding="utf-8",
@@ -177,6 +298,7 @@ def run_adb(
     cmd = [adb_bin, "-s", target, *args]
     proc = subprocess.run(
         cmd,
+        stdin=subprocess.DEVNULL,
         capture_output=True,
         text=True,
         encoding="utf-8",
@@ -195,8 +317,29 @@ def run_adb_shell(
     check: bool = True,
     timeout: int = 60,
 ) -> str:
-    """Execute `adb -s <serial> shell ...` safely with POSIX shell-quoting per argument."""
+    """Execute a privileged Android shell command via `adb shell` or Shizuku `rish -c`."""
     quoted_args = [shlex.quote(str(arg)) for arg in shell_args]
+    if resolve_bridge_mode() == "rish":
+        resolve_serial(serial)
+        rish_bin = find_rish(required=True)
+        assert rish_bin is not None
+        cmd_str = " ".join(quoted_args)
+        proc = subprocess.run(
+            [rish_bin, "-c", cmd_str],
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            env=_rish_env(),
+            timeout=timeout,
+        )
+        if check and proc.returncode != 0:
+            err = proc.stderr.strip() or proc.stdout.strip()
+            hint = " (Tip: on Android 14+, ensure `chmod 400 rish_shizuku.dex`)" if "dex" in err.lower() else ""
+            raise AdbCommandError(f"Shizuku `rish -c {cmd_str}` failed (exit {proc.returncode}): {err}{hint}")
+        return proc.stdout
+
     proc = run_adb(["shell", *quoted_args], serial=serial, check=check, timeout=timeout)
     return proc.stdout
 
